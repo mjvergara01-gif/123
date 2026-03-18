@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-set -o errexit # exit on error
+set -o errexit
 
-# Upgrade pip
-python -m pip install --upgrade pip
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Collect static files and migrate
 python manage.py collectstatic --no-input
 python manage.py migrate
 
-python manage.py createsu # new 
+# force recreate (delete then create)
+python manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username='admin').delete()"
+
+python manage.py createsu
